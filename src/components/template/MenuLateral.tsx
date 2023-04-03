@@ -20,7 +20,7 @@ export default function MenuLateral() {
             texto={"Notificações"}
             icone={IconeSino}
           />
-          <MenuItem url={"/"} texto={"Ajustes"} icone={IconeAjustes} />
+          <MenuItem url={"/ajustes"} texto={"Ajustes"} icone={IconeAjustes} />
         </ul>
         <ul>
           <MenuItem
