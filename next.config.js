@@ -10,6 +10,7 @@ const nextConfig = {
         pathname: '/random',
       },
     ],
+    domains: ['lh3.googleusercontent.com']
   },
 }
 
