@@ -6,20 +6,22 @@ import { IconeAtencao } from "@/components/icons";
 import useAuth from "@/data/hook/useAuth";
 
 export default function Autenticacao() {
-  const { user, loginGoogle } = useAuth();
+  const { cadastrar, login, loginGoogle } = useAuth();
 
   const [modo, setModo] = useState<"login" | "cadastro">("login");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState(null);
 
-  function handleSubmit() {
-    if (modo === "login") {
-      console.log("login");
-      exibirErro("Ocorreu um erro no login", 2);
-    } else {
-      console.log("cadastrar");
-      exibirErro("Ocorreu um erro no cadastro", 2);
+  async function handleSubmit() {
+    try {
+      if (modo === "login") {
+        await login(email, senha);
+      } else {
+        await cadastrar(email, senha);
+      }
+    } catch (error) {
+      exibirErro('Crendeciais Inválidas', 2);
     }
   }
 
@@ -48,8 +50,10 @@ export default function Autenticacao() {
             {modo === "login" ? "Entre com a sua conta" : " Cadastre sua conta"}
           </h1>
           {erro ? (
-            <div className={`flex items-center bg-red-400 text-white 
-                            py-3 px-5 my-2 border rounded-lg`}>
+            <div
+              className={`flex items-center bg-red-400 text-white 
+                            py-3 px-5 my-2 border rounded-lg`}
+            >
               {IconeAtencao()}
               <span className={`ml-3`}> {erro} </span>
             </div>

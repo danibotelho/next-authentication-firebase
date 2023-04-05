@@ -7,10 +7,20 @@ import route from "next/router";
 interface AuthContextProps {
   user?: User | null;
   carregando?: boolean;
+  cadastrar: (email: string, senha: string) => Promise<void>;
+  login: (email: string, senha: string) => Promise<void>;
   loginGoogle?: () => Promise<void>;
   logout?: () => Promise<void>;
 }
-const AuthContext = createContext<AuthContextProps>({});
+
+const AuthContext = createContext<AuthContextProps>({
+  cadastrar: function (email: string, senha: string): Promise<void> {
+    throw new Error("Function not implemented.");
+  },
+  login: function (email: string, senha: string): Promise<void> {
+    throw new Error("Function not implemented.");
+  }
+});
 
 async function usuarioNormalizado(
   usuarioFirebase: firebase.User
@@ -55,6 +65,34 @@ export function AuthProvider(props: any) {
     }
   }
 
+  async function cadastrar(email: string, senha: string) {
+    try {
+      setCarregando(true);
+      const resp = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, senha);
+
+      await configurarSessao(resp.user);
+      route.push("/");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
+  async function login(email: string, senha: string) {
+    try {
+      setCarregando(true);
+      const resp = await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, senha);
+
+      await configurarSessao(resp.user);
+      route.push("/");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   async function loginGoogle() {
     try {
       setCarregando(true);
@@ -81,16 +119,18 @@ export function AuthProvider(props: any) {
   }
 
   useEffect(() => {
-    if(Cookies.get('admin-template-auth')) {
-        const cancelar = firebase.auth().onIdTokenChanged(configurarSessao)
-        return () => cancelar()
+    if (Cookies.get("admin-template-auth")) {
+      const cancelar = firebase.auth().onIdTokenChanged(configurarSessao);
+      return () => cancelar();
     } else {
-        setCarregando(false)
+      setCarregando(false);
     }
-}, [])
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user,carregando, loginGoogle, logout }}>
+    <AuthContext.Provider
+      value={{ user, carregando, cadastrar, login, loginGoogle, logout }}
+    >
       {props.children}
     </AuthContext.Provider>
   );
