@@ -6,7 +6,9 @@ import route from "next/router";
 
 interface AuthContextProps {
   user?: User | null;
+  carregando?: boolean;
   loginGoogle?: () => Promise<void>;
+  logout?: () => Promise<void>;
 }
 const AuthContext = createContext<AuthContextProps>({});
 
@@ -56,7 +58,9 @@ export function AuthProvider(props: any) {
   async function loginGoogle() {
     try {
       setCarregando(true);
-      const resp = await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      const resp = await firebase
+        .auth()
+        .signInWithPopup(new firebase.auth.GoogleAuthProvider());
 
       await configurarSessao(resp.user);
       route.push("/");
@@ -64,13 +68,29 @@ export function AuthProvider(props: any) {
       setCarregando(false);
     }
   }
+
+  async function logout() {
+    try {
+      setCarregando(true);
+      await firebase.auth().signOut();
+      await configurarSessao(null);
+      //route.push("/autenticacao");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   useEffect(() => {
-    const cancelar = firebase.auth().onIdTokenChanged(configurarSessao);
-    return () => cancelar();
-  }, []);
+    if(Cookies.get('admin-template-auth')) {
+        const cancelar = firebase.auth().onIdTokenChanged(configurarSessao)
+        return () => cancelar()
+    } else {
+        setCarregando(false)
+    }
+}, [])
 
   return (
-    <AuthContext.Provider value={{ user, loginGoogle }}>
+    <AuthContext.Provider value={{ user,carregando, loginGoogle, logout }}>
       {props.children}
     </AuthContext.Provider>
   );
