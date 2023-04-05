@@ -36,7 +36,7 @@ export default function Autenticacao() {
         className={`bg-gray-100 px-8 py-8 rounded-lg 
                     md:block md:w-1/2 selection:sm:h-1/8 lg:w-1/3`}
       >
-        <div className={`mb-8`}>
+        <div className={`flex justify-center mb-8 w-300`}>
           <Image
             src={emerge}
             alt="imagem emerge"
@@ -81,7 +81,7 @@ export default function Autenticacao() {
             className={`w-full bg-green-500 hover:bg-green-400 
                       text-white rounded-lg px-4 py-3 mt-6`}
           >
-            {modo === "login" ? "Entrar" : "Cadastrar"}
+            {modo === "login" ? "Entrar" : " Cadastrar"}
           </button>
 
           <hr className={`my-6 border-gray-300 w-full`} />
