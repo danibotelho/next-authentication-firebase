@@ -81,7 +81,7 @@ export default function Autenticacao() {
             className={`w-full bg-green-500 hover:bg-green-400 
                       text-white rounded-lg px-4 py-3 mt-6`}
           >
-            {modo === "login" ? "Entrar" : " Cadastrar"}
+            {modo === "login" ? "Entrar" : "Cadastrar"}
           </button>
 
           <hr className={`my-6 border-gray-300 w-full`} />
