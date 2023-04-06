@@ -12,7 +12,7 @@ export function AppProvider(props: any) {
   const [tema, setTema] = useState<any>("dark");
 
   function alternarTema() {
-    const novoTema = tema === "" ? "dark" : "";
+    const novoTema = tema === "dark" ? "" : "dark";
     setTema(novoTema);
     localStorage.setItem("tema", novoTema);
   }
